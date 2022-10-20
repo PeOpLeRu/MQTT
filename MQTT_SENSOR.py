@@ -31,6 +31,9 @@ def map(value, in_min, in_max, out_min, out_max):
 broker = "broker.emqx.io"
 UNIQUE_ID = 998
 
+max_val = 0
+min_val = 0
+
 client = mqtt_client.Client(f'lab_{random.randint(10000, 999999)}')
 
 client.connect(broker)
@@ -89,7 +92,14 @@ while True:
         print("\rSending data", end="")
         if time.time() - timer_start >= duration:
             need_input = True
-        client.publish(f'lab/{UNIQUE_ID}/photo/instant', response)         
+        client.publish(f'lab/{UNIQUE_ID}/photo/instant', response)
+    elif command == 5:
+        if(queue>max_val):
+            max_val=queue
+        else:
+            min_val=queue
+        client.publish(f'lab/{UNIQUE_ID}/photo/max', response)
+        client.publish(f'lab/{UNIQUE_ID}/photo/min', response)
 
 print("Disconnect!")
 client.disconnect()
