@@ -94,12 +94,12 @@ while True:
             need_input = True
         client.publish(f'lab/{UNIQUE_ID}/photo/instant', response)
     elif command == 5:
-        if(queue>max_val):
-            max_val=queue
+        if(response > max_val):
+            max_val = response
         else:
-            min_val=queue
-        client.publish(f'lab/{UNIQUE_ID}/photo/max', response)
-        client.publish(f'lab/{UNIQUE_ID}/photo/min', response)
+            min_val = response
+        client.publish(f'lab/{UNIQUE_ID}/photo/max', max_val)
+        client.publish(f'lab/{UNIQUE_ID}/photo/min', min_val)
 
 print("Disconnect!")
 client.disconnect()
