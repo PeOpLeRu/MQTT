@@ -29,17 +29,14 @@ def map(value, in_min, in_max, out_min, out_max):
     return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
 broker = "broker.emqx.io"
-UNIQUE_ID = 998
-
-max_val = 0
-min_val = 0
+UNIQUE_ID = 589123456903456
 
 client = mqtt_client.Client(f'lab_{random.randint(10000, 999999)}')
 
 client.connect(broker)
 
-# arduino = serial.Serial(port="COM5", baudrate=9600)
-arduino = connect()
+arduino = serial.Serial(port="COM6", baudrate=9600)
+# arduino = connect()
 
 print("""Список команд:
 1 - Получить моментальное значение сенсора
@@ -83,7 +80,7 @@ while True:
     if command == 1:
         client.publish(f'lab/{UNIQUE_ID}/photo/instant', response) 
     elif command == 2:
-        client.publish(f'lab/{UNIQUE_ID}/photo/instant', avg_value / len(queue)) 
+        client.publish(f'lab/{UNIQUE_ID}/photo/average', avg_value / len(queue)) 
     elif command == 3:
         need_input = False
         timer_start = time.time()
@@ -92,14 +89,8 @@ while True:
         print("\rSending data", end="")
         if time.time() - timer_start >= duration:
             need_input = True
-        client.publish(f'lab/{UNIQUE_ID}/photo/instant', response)
-    elif command == 5:
-        if(response > max_val):
-            max_val = response
-        else:
-            min_val = response
-        client.publish(f'lab/{UNIQUE_ID}/photo/max', max_val)
-        client.publish(f'lab/{UNIQUE_ID}/photo/min', min_val)
+        client.publish(f'lab/{UNIQUE_ID}/photo/stream', response)    
+        time.sleep(0.1)     
 
 print("Disconnect!")
 client.disconnect()
